@@ -1,0 +1,20 @@
+version: '3.7'
+
+networks:
+  my-blog-network:
+    driver: bridge
+
+services:
+  swagger-ui-server:
+    image: my-blog:latest
+    restart: always
+    container_name: my-blog
+    hostname: my-blog
+    environment:
+      BIND_ADDR: :80
+    ports:
+      - '80:80'
+    volumes:
+      - ./docs/:/root/statics/docs/
+    networks:
+      my-blog-network: { }

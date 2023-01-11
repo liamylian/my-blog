@@ -1,0 +1,15 @@
+<!-- HTML for static distribution bundle build -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Swagger UI Server</title>
+</head>
+<body>
+<ul>
+    {{ range . }}
+    <li><a href="/{{.APP}}?file={{ .URL }}">{{ .URL }}</a></li>
+    {{- end }}
+</ul>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Text in the browser</title>
+</head>
+<body>
+<pre id="content"></pre>
+<script>
+    function getQueryVariable(variable) {
+        let query = window.location.search.substring(1);
+        let vars = query.split("&");
+        for (let i = 0; i < vars.length; i++) {
+            let pair = vars[i].split("=");
+            if (pair[0] == variable) {
+                return pair[1];
+            }
+        }
+        return undefined;
+    }
+
+    function get(uri) {
+        return new Promise(function (resolve, reject) {
+            let xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState !== 4) {
+                    return;
+                }
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    if (xhr.getResponseHeader('content-type').indexOf('application/json') !== -1) {
+                        let resp = JSON.parse(xhr.responseText);
+                        resolve(resp);
+                    } else {
+                        resolve(xhr.responseText);
+                    }
+                } else {
+                    if (xhr.getResponseHeader('content-type').indexOf('application/json') !== -1) {
+                        let resp = JSON.parse(xhr.responseText);
+                        reject(resp)
+                    } else {
+                        reject(xhr.responseText)
+                    }
+                }
+            };
+
+            xhr.open('GET', uri, true);
+            xhr.send();
+        });
+    }
+
+    let filename = getQueryVariable("file")
+    window.onload = function () {
+        get(filename).then(function (resp) {
+            document.getElementById('content').innerHTML = resp;
+        })
+    };
+
+</script>
+</body>
+</html>
